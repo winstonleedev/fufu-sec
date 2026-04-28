@@ -31,23 +31,22 @@ SYSTEM_REQS=(
   airmon-ng airodump-ng aircrack-ng aireplay-ng
   mdk4 hostapd dnsmasq
   reaver bully pixiewps
-  hashcat john crunch
+  hashcat john crunch64
   hcxpcapngtool hcxdumptool tshark tcpdump
 )
 
 # --- Install Python packages ---
 echo "[+] Installing Python dependencies..."
-pip3 install --upgrade pip
-pip3 install "${PYTHON_REQS[@]}"
+$VENV/bin/pip install --upgrade pip
+$VENV/bin/pip install "${PYTHON_REQS[@]}"
 
 echo "[+] Setup complete."
-
 
 echo ""
 info "Done. To start fufu-sec:"
 echo ""
 echo "    cd $SCRIPT_DIR"
-echo "    sudo .venv/bin/python3 server.py"
+echo "    sudo $VENV/bin/python3 server.py"
 echo ""
 echo "    Open  http://localhost:5000  in your browser."
 echo ""

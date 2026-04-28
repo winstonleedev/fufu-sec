@@ -37,18 +37,18 @@ install_aur_package() {
 
 # ── System packages ───────────────────────────────────────────────────────────
 info "Installing system packages..."
-pacman -Sy --noconfirm
-pacman -S --needed --noconfirm \
+yay -Sy --noconfirm
+yay -S --needed --noconfirm \
     iw wireless_tools net-tools \
     aircrack-ng \
     reaver bully pixiewps \
     hcxdumptool hcxtools \
     mdk4 \
     tcpdump wireshark-cli \
-    hashcat crunch \
+    hashcat crunch64 \
     hostapd dnsmasq iptables
 
-if ! pacman -S --needed --noconfirm wordlists 2>/dev/null; then
+if ! yay -S --needed --noconfirm wordlists 2>/dev/null; then
     warn "wordlists package not available in the official repos."
     install_aur_package wordlists john-git || warn "Install rockyou manually or add an AUR helper."
 fi
