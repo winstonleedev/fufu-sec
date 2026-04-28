@@ -57,21 +57,3 @@ fi
 [[ -f /usr/share/wordlists/rockyou.txt.gz && ! -f /usr/share/wordlists/rockyou.txt ]] && \
     gunzip /usr/share/wordlists/rockyou.txt.gz && info "rockyou.txt decompressed"
 
-# ── Local Python venv (stays inside this folder) ─────────────────────────────
-VENV="$SCRIPT_DIR/.venv"
-[[ ! -d "$VENV" ]] && python3 -m venv "$VENV" && info "Created .venv"
-"$VENV/bin/pip" install --quiet --upgrade flask flask-cors
-info "Flask installed in .venv"
-
-# ── Runtime dirs ─────────────────────────────────────────────────────────────
-mkdir -p /tmp/fufu-sec "$SCRIPT_DIR/logs"
-
-echo ""
-info "Done. To start fufu-sec:"
-echo ""
-echo "    cd $SCRIPT_DIR"
-echo "    sudo .venv/bin/python3 server.py"
-echo ""
-echo "    Open  http://localhost:5000  in your browser."
-echo ""
-warn "To uninstall: delete the fufu-sec folder. Nothing was installed globally."

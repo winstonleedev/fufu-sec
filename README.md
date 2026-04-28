@@ -28,7 +28,12 @@ fufu-sec is a web dashboard for wireless security testing. It wraps the standard
 ```bash
 git clone https://github.com/kyllr-qwen/fufu-sec.git
 cd fufu-sec
-sudo bash install.sh
+
+# Setup system packages, need root
+sudo ./setup-system.sh
+
+# Setup python environment, doesn't need root
+./setup-python.sh
 ```
 
 That's it. Nothing is installed globally — everything stays inside the `fufu-sec/` folder.
