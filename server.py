@@ -1817,84 +1817,10 @@ def list_wordlists():
 # Mirrors airgeddon autoupdate_check() — fetches server.py from main branch,
 # reads the version string and compares to running version.
 
-FUFU_VERSION  = "3.5.0"
-FUFU_REPO_RAW = "https://raw.githubusercontent.com/kyllr-qwen/fufu-sec/main/server.py"
-FUFU_REPO_URL = "https://github.com/kyllr-qwen/fufu-sec"
-
 @app.route("/api/update/check")
 def update_check():
-    """
-    Check for updates using GitHub Releases API first, then raw-file fallback.
-    Mirrors airgeddon autoupdate_check() but uses Python urllib (no curl dependency).
-    Handles repos that have no releases yet gracefully.
-    """
-    import urllib.request, urllib.error, json as _json
+    return jsonify({})
 
-    result = {
-        "current_version": FUFU_VERSION,
-        "latest_version":  None,
-        "up_to_date":      None,
-        "repo_url":        FUFU_REPO_URL,
-        "error":           None,
-        "method":          None,
-        "note":            None,
-    }
-
-    _headers = {"User-Agent": "fufu-sec-update-check/1.0",
-                "Accept": "application/vnd.github+json"}
-
-    # ── Method 1: GitHub Releases API ────────────────────────────────────────
-    api_url = "https://api.github.com/repos/kyllr-qwen/fufu-sec/releases/latest"
-    try:
-        req = urllib.request.Request(api_url, headers=_headers)
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            data = _json.loads(resp.read().decode("utf-8"))
-        tag = data.get("tag_name", "").lstrip("v").strip()
-        if tag:
-            result.update({"latest_version": tag,
-                           "up_to_date": (tag == FUFU_VERSION),
-                           "method": "github-releases-api"})
-            return jsonify(result)
-    except urllib.error.HTTPError as e:
-        if e.code == 404:
-            # Repo exists but no releases published yet
-            result.update({"latest_version": FUFU_VERSION, "up_to_date": True,
-                           "method": "no-releases-yet",
-                           "note": "No releases published yet — you have the latest source code."})
-            return jsonify(result)
-        # Other HTTP error — fall through to raw-file check
-    except Exception:
-        pass   # network error — try raw file
-
-    # ── Method 2: Raw server.py from main branch ──────────────────────────────
-    try:
-        req2 = urllib.request.Request(FUFU_REPO_RAW, headers=_headers)
-        with urllib.request.urlopen(req2, timeout=10) as resp:
-            raw = resp.read(8192).decode("utf-8", errors="replace")
-        # Simple robust pattern — no raw string escaping pitfalls
-        ver_pat = re.compile(r'FUFU_VERSION\s*=\s*["\']([0-9][0-9.a-zA-Z\-]+)')
-        m = ver_pat.search(raw)
-        if m:
-            latest = m.group(1)
-            result.update({"latest_version": latest,
-                           "up_to_date": (latest == FUFU_VERSION),
-                           "method": "raw-file"})
-        else:
-            result["error"] = ("Version not found in remote file. "
-                               "Repo may not be published yet — check "
-                               "github.com/kyllr-qwen/fufu-sec manually.")
-    except urllib.error.HTTPError as e:
-        if e.code == 404:
-            result["error"] = ("Repository not found at github.com/kyllr-qwen/fufu-sec. "
-                               "Push the repo to GitHub to enable update checks.")
-        else:
-            result["error"] = f"HTTP {e.code} from GitHub"
-    except urllib.error.URLError as e:
-        result["error"] = f"Network error: {e.reason}"
-    except Exception as e:
-        result["error"] = str(e)
-
-    return jsonify(result)
 
 # ── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
